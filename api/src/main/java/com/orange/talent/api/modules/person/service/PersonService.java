@@ -1,15 +1,12 @@
 package com.orange.talent.api.modules.person.service;
 
 import com.orange.talent.api.modules.person.dto.PersonDTO;
-import com.orange.talent.api.modules.person.exception.PersonAlreadyRegisteredException;
-import javassist.NotFoundException;
-
-import java.util.Optional;
+import com.orange.talent.api.modules.person.exception.PersonNotFoundException;
 
 public interface PersonService {
 
-    PersonDTO createPerson(PersonDTO personDTO) throws PersonAlreadyRegisteredException;
+    PersonDTO createPersonAndBet(PersonDTO personDTO);
 
-    PersonDTO findByEmail(String email) throws NotFoundException;
+    PersonDTO findBetByEmail(String email) throws PersonNotFoundException;
 
 }

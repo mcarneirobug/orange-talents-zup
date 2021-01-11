@@ -1,12 +1,8 @@
 package com.orange.talent.api.modules.person.dto;
 
 import com.orange.talent.api.model.Ticket;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
@@ -23,8 +19,6 @@ public class PersonDTO {
     @Email
     private String email;
 
-    @Valid
-    @NotEmpty(message = "Favor informar as apostas associadas.")
     private List<Ticket> tickets;
 
 }
