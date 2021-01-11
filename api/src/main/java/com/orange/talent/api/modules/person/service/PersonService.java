@@ -1,12 +1,13 @@
 package com.orange.talent.api.modules.person.service;
 
-import com.orange.talent.api.modules.person.dto.PersonDTO;
+import com.orange.talent.api.modules.person.dto.request.PersonRequestDTO;
+import com.orange.talent.api.modules.person.dto.response.PersonResponseDTO;
 import com.orange.talent.api.modules.person.exception.PersonNotFoundException;
 
 public interface PersonService {
 
-    PersonDTO createPersonAndBet(PersonDTO personDTO);
+    PersonResponseDTO createPersonAndBet(PersonRequestDTO requestDTO);
 
-    PersonDTO findBetByEmail(String email) throws PersonNotFoundException;
+    PersonResponseDTO findBetByEmail(String email) throws PersonNotFoundException;
 
 }

@@ -2,7 +2,8 @@ package com.orange.talent.api.modules.person.service.impl;
 
 import com.orange.talent.api.model.Person;
 import com.orange.talent.api.model.Ticket;
-import com.orange.talent.api.modules.person.dto.PersonDTO;
+import com.orange.talent.api.modules.person.dto.request.PersonRequestDTO;
+import com.orange.talent.api.modules.person.dto.response.PersonResponseDTO;
 import com.orange.talent.api.modules.person.exception.PersonNotFoundException;
 import com.orange.talent.api.modules.person.mapper.PersonMapper;
 import com.orange.talent.api.modules.person.repository.PersonRepository;
@@ -28,9 +29,9 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public PersonDTO createPersonAndBet(PersonDTO personDTO) {
+    public PersonResponseDTO createPersonAndBet(PersonRequestDTO requestDTO) {
 
-        final var person = verifyIfIsAlreadyRegistered(personDTO);
+        final var person = verifyIfIsAlreadyRegistered(requestDTO);
 
         if(person.getTickets() == null) {
             person.setTickets(List.of(new Ticket()));
@@ -42,7 +43,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public PersonDTO findBetByEmail(String email) throws PersonNotFoundException {
+    public PersonResponseDTO findBetByEmail(String email) throws PersonNotFoundException {
         return this.personRepository.findByEmail(email)
                 .map(person -> {
                     person.getTickets().sort(Comparator.comparing(Ticket::getCreatedAt));
@@ -52,12 +53,12 @@ public class PersonServiceImpl implements PersonService {
                 .orElseThrow(() -> new PersonNotFoundException(email));
     }
 
-    private Person verifyIfIsAlreadyRegistered(PersonDTO personDTO) {
-        return personRepository.findByEmail(personDTO.getEmail())
+    private Person verifyIfIsAlreadyRegistered(PersonRequestDTO requestDTO) {
+        return personRepository.findByEmail(requestDTO.getEmail())
                 .map(person -> {
                     this.ticketService.verifyIfTicketNumberAlreadyExistsAndCreateNew(person.getTickets());
                     return person;
                 }) // get and create ticket
-                .orElseGet(() -> personMapper.toModel(personDTO)); // quando não existe email
+                .orElseGet(() -> personMapper.to(requestDTO)); // quando não existe email
     }
 }

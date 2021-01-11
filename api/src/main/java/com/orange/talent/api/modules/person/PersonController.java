@@ -1,6 +1,7 @@
 package com.orange.talent.api.modules.person;
 
-import com.orange.talent.api.modules.person.dto.PersonDTO;
+import com.orange.talent.api.modules.person.dto.request.PersonRequestDTO;
+import com.orange.talent.api.modules.person.dto.response.PersonResponseDTO;
 import com.orange.talent.api.modules.person.exception.PersonNotFoundException;
 import com.orange.talent.api.modules.person.service.PersonService;
 import org.springframework.http.HttpStatus;
@@ -20,12 +21,12 @@ public class PersonController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PersonDTO createPersonAndBet(@RequestBody @Valid PersonDTO personDTO) {
-        return this.personService.createPersonAndBet(personDTO);
+    public PersonResponseDTO createPersonAndBet(@RequestBody @Valid PersonRequestDTO requestDTO) {
+        return this.personService.createPersonAndBet(requestDTO);
     }
 
     @GetMapping("/{email}")
-    public PersonDTO findBetByEmail(@PathVariable("email") String email) throws PersonNotFoundException {
+    public PersonResponseDTO findBetByEmail(@PathVariable("email") String email) throws PersonNotFoundException {
         return this.personService.findBetByEmail(email);
     }
 
