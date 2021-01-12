@@ -6,12 +6,10 @@ import com.orange.talent.api.modules.person.dto.response.PersonResponseDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface PersonMapper {
 
     PersonMapper INSTANCE = Mappers.getMapper(PersonMapper.class);
-
-    Person toModel(PersonResponseDTO responseDTO);
 
     PersonResponseDTO toDTO(Person person);
 
