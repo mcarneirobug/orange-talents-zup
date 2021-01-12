@@ -28,7 +28,7 @@ public class TicketServiceImpl implements TicketService {
             if(t.getRandomNumber().equals(ticket.getRandomNumber())) {
                 ticket.setRandomNumber(new Random().nextInt(10000000 - 1));
             } else if (ticket.getRandomNumber().equals(t.getRandomNumber())) {
-                log.error("ih papai");
+                log.error("Error: Ticket gerado já gerado previamente.");
             }
         });
         tickets.add(ticket);
