@@ -11,6 +11,6 @@ spring:
   jmx:
     enabled: false
   datasource:
-    url: jdbc:mysql://127.0.0.1:3305/lottery?allowPublicKeyRetrieval=true&sslMode=DISABLED&useSSL=false&useTimezone=true&serverTimezone=UTC
+    url: jdbc:mysql://127.0.0.1:3306/lottery?allowPublicKeyRetrieval=true&sslMode=DISABLED&useSSL=false&useTimezone=true&serverTimezone=UTC
     username: root
     password: admin
