@@ -6,7 +6,7 @@ import com.orange.talent.api.modules.person.exception.PersonNotFoundException;
 
 public interface PersonService {
 
-    PersonResponseDTO createPersonAndBet(PersonRequestDTO requestDTO);
+    PersonResponseDTO getOrCreate(PersonRequestDTO requestDTO);
 
     PersonResponseDTO findBetByEmail(String email) throws PersonNotFoundException;
 

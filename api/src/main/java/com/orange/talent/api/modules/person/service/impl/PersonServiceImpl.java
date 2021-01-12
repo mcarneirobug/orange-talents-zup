@@ -29,7 +29,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public PersonResponseDTO createPersonAndBet(PersonRequestDTO requestDTO) {
+    public PersonResponseDTO getOrCreate(PersonRequestDTO requestDTO) {
 
         final var person = verifyIfIsAlreadyRegistered(requestDTO);
 
