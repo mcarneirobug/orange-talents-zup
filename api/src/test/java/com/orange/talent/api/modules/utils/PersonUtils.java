@@ -12,25 +12,28 @@ public class PersonUtils {
     private static final String EMAIL = "matheus@gmail.com";
 
     public static PersonResponseDTO generatePersonResponseDTO() {
-        return PersonResponseDTO
-                .builder()
-                .tickets(Collections.singletonList(TicketUtils.generateTicket()))
-                .build();
+        final var personResponseDTO = new PersonResponseDTO();
+
+        personResponseDTO.setTickets(Collections.singletonList(TicketUtils.generateTicket()));
+
+        return personResponseDTO;
     }
 
     public static PersonRequestDTO generatePersonRequestDTO() {
-        return PersonRequestDTO
-                .builder()
-                .email(EMAIL)
-                .build();
+        final var personRequestDTO = new PersonRequestDTO();
+
+        personRequestDTO.setEmail(EMAIL);
+
+        return personRequestDTO;
     }
 
     public static Person generatePerson() {
-        return Person.
-                builder()
-                .id(PERSON_ID)
-                .email(EMAIL)
-                .tickets(Collections.singletonList(TicketUtils.generateTicket()))
-                .build();
+        final var person = new Person();
+
+        person.setId(PERSON_ID);
+        person.setEmail(EMAIL);
+        person.setTickets(Collections.singletonList(TicketUtils.generateTicket()));
+
+        return person;
     }
 }

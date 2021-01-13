@@ -8,12 +8,13 @@ import java.time.LocalDateTime;
 public class TicketUtils {
 
     public static Ticket generateTicket() {
-        return Ticket
-                .builder()
-                .id(1L)
-                .randomNumber(1)
-                .createdAt(LocalDateTime.MIN)
-                .build();
+        final var ticket = new Ticket();
+
+        ticket.setId(1L);
+        ticket.setRandomNumber(1);
+        ticket.setCreatedAt(LocalDateTime.MIN);
+
+        return ticket;
     }
 
 }
