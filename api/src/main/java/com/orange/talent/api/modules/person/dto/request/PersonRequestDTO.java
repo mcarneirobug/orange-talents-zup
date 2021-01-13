@@ -13,7 +13,7 @@ import javax.validation.constraints.NotEmpty;
 @NoArgsConstructor
 public class PersonRequestDTO {
 
-    @ApiModelProperty(value = "E-mail da pessoa.", required = true)
+    @ApiModelProperty(value = "E-mail da pessoa.", required = true, example = "matheus@gmail.com")
     @NotEmpty(message = "Favor informar o e-mail.")
     @Email
     private String email;
