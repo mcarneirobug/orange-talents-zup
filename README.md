@@ -89,7 +89,7 @@ public class Person {
 }
 ```
 
-A entidade ticket é responsável por gerar um número randômico que será o número referente a aposta. Com isso, também um dos requisitos era que fosse retornado em ordem de criação, para isso foi necessário um atributo de data de criação.
+A entidade ticket é responsável por gerar um número randômico que será o número referente a aposta. Com isso, também um dos requisitos era que fosse retornado em ordem de criação, para isso foi necessário um atributo de data de criação. E para gerar o número randômico foi criado um método que vai gerar uma sequência aleatória utilizando a classe Random do próprio Java.
 
 ```java
 @Getter
@@ -132,13 +132,24 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
 
 Explicação sobre PersonRequestDTO, anotações (...)
 
+A classe PersonRequestDTO foi pensada com base no requisito de que devemos passar apenas o e-mail da pessoa para que fosse retornado os números sorteados, com isso, foi utilizado o padrão DTO que permite que a gente não exponha o modelo de domínio.
+
+- Para a estruturação dessa classe foi utilizado anotações do Lombok, Swagger e também do hibernate validator.
+
+```
+@ApiModelProperty() - Utilizada para controlar definições do nosso modelo para auxiliar na interface UI do Swagger.
+@NotEmpty() - Verifica se o campo não é nulo e nem vazio.
+@Email - Verifica se o campo possui as características de um endereço de e-mail.
+@Data - Irá gerar automaticamente ToString, EqualsAndHashCode, Getter, Setter, RequiredArgsConstructor.
+```
+
 ```java
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class PersonRequestDTO {
 
-    @ApiModelProperty(value = "E-mail da pessoa.", required = true)
+    @ApiModelProperty(value = "E-mail da pessoa.", required = true, example = "matheus@gmail.com")
     @NotEmpty(message = "Favor informar o e-mail.")
     @Email
     private String email;
@@ -146,7 +157,7 @@ public class PersonRequestDTO {
 }
 ```
 
-Explicação sobre PersonResponseDTO, anotações (...)
+A classe PersonResponseDTO será nossa classe que será a responsa da nossa requisição, ou seja, seguindo as especificações quando fosse requisitado um e-mail de uma pessoa, deve-se retornar os números sorteados, portanto essa é a responsabilidade dessa classe que também há algumas anotações do Lombok para auxiliar no desenvolvimento.
 
 ```java
 @Data
