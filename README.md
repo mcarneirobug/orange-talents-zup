@@ -130,8 +130,6 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
 }
 ```
 
-Explicação sobre PersonRequestDTO, anotações (...)
-
 A classe PersonRequestDTO foi pensada com base no requisito de que devemos passar apenas o e-mail da pessoa para que fosse retornado os números sorteados, com isso, foi utilizado o padrão DTO que permite que a gente não exponha o modelo de domínio.
 
 - Para a estruturação dessa classe foi utilizado anotações do Lombok, Swagger e também do hibernate validator.
@@ -189,7 +187,12 @@ public interface PersonMapper {
 }
 ```
 
-Explicação sobre interface PersonService (...)
+O serviço irá conter dois métodos e para isso foi criado um contrato criando uma interface para que fosse implementada posteriormente.
+
+- O primeiro método getOrCreate, basicamente é responsável por criar uma nova pessoa com um ticket, porém caso for inserido novamente o mesmo e-mail, será apenas criado um novo ticket para aquele determinado usuário.
+- O segundo método findBetByEmail, é responsável por buscar a pessoa pelo seu e-mail e ordenando seus tickets por ordem de criação e caso não encontre é retornado uma exceção personalizada.
+
+Podemos observarmos que tanto o retorno e o parâmetro passado é utilizado os DTOs para que não exponha nossa entidade de domínio.
 
 ```java
 public interface PersonService {
@@ -201,7 +204,52 @@ public interface PersonService {
 }
 ```
 
-Explicação sobre serviço PersonServiceImpl (...)
+Nosso primeiro método **getOrCreate**, utiliza-se de outro método no primeiro momento que será responsável por verificar se o e-mail passado se encontra na nossa base de dados, caso houver, iremos utilizar de outro método que está de responsabilidade do TicketService que é responsável por gerar um novo ticket para esse e-mail, já fazendo a validação para que não seja um ticket repetido para o mesmo e-mail. Caso não for encontrado nenhum e-mail, ele já vai retornar o objeto mapeado que será gerado um novo ticket para ele e por fim, será salvo na base de dados. 
+
+- Dessa forma foi criado um método que é capaz de criar uma nova pessoa com um ticket, ou, caso ela já tenha sido cadastrada previamente, somente é adicionado um ticket para ela.
+
+```
+@Override
+    public PersonResponseDTO getOrCreate(PersonRequestDTO requestDTO) {
+
+        final var person = verifyIfIsAlreadyRegistered(requestDTO);
+
+        if(person.getTickets() == null) {
+            person.setTickets(List.of(new Ticket()));
+        }
+
+        final var saved = this.personRepository.save(person);
+
+        return personMapper.toDTO(saved);
+    }
+    
+     private Person verifyIfIsAlreadyRegistered(PersonRequestDTO requestDTO) {
+        return personRepository.findByEmail(requestDTO.getEmail())
+                .map(person -> {
+                    this.ticketService.verifyIfTicketNumberAlreadyExistsAndCreateNew(person.getTickets());
+                    return person;
+                }) // get and create ticket
+                .orElseGet(() -> personMapper.to(requestDTO)); // quando não existe email
+    }
+    
+```
+
+O segundo método irá (...)
+
+```
+@Override
+    public PersonResponseDTO findBetByEmail(String email) throws PersonNotFoundException {
+        return this.personRepository.findByEmail(email)
+                .map(person -> {
+                    person.getTickets().sort(Comparator.comparing(Ticket::getCreatedAt));
+                    return person;
+                })
+                .map(personMapper::toDTO)
+                .orElseThrow(() -> new PersonNotFoundException(email));
+    }
+```
+
+- Implementação completa: 
 
 ```java
 @Service
@@ -267,7 +315,9 @@ public class PersonNotFoundException extends Exception {
 }
 ```
 
-Explicação sobre TicketService interface (...)
+O serviço irá conter um método e para isso foi criado um contrato criando uma interface para que fosse implementada posteriormente.
+
+- O funcionamento do método verifyIfTicketNumberAlreadyExistsAndCreateNew é para garantir um dos requisitos que era assegurar que não houvesse sequência de números iguais para o mesmo e-mail.
 
 ```java
 public interface TicketService {
@@ -278,6 +328,12 @@ public interface TicketService {
 ```
 
 Explicação sobre TicketServiceImpl, anotações (...)
+
+```
+@Service: Usamos esta anotação para que o framework enxergue nossa classe e indicamos que esta classe é um serviço.
+```
+
+O método criado basicamente irá instanciar um novo ticket, com a geração automática de um novo número aleatório e iremos iterar por todos os tickets passado por parâmetro e irá checar se forem iguais, caso for, será gerado um novo ticket e se caso esse novo ticket gerado ainda tenha à probabilidade de ser igual, será dado um log de error informando.
 
 ```java
 @Service
