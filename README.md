@@ -51,7 +51,6 @@ Explicação sobre o modelo Person citando o Lombok e anotações (...)
 ```java
 @Getter
 @Setter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
@@ -78,7 +77,6 @@ Explicação sobre o modelo Ticket citando o Lombok e anotações (...)
 ```java
 @Getter
 @Setter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
@@ -119,7 +117,6 @@ Explicação sobre PersonRequestDTO, anotações (...)
 
 ```java
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class PersonRequestDTO {
@@ -136,7 +133,6 @@ Explicação sobre PersonResponseDTO, anotações (...)
 
 ```java
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class PersonResponseDTO {
@@ -310,7 +306,10 @@ public class PersonController {
 }
 ```
 
-Explicação sobre SwaggerConfig, anotações (...)
+### Swagger
+
+- Acredito que toda API necessite ter uma documentação, pensando nisso, foi-se utilizado o Swagger que trás diversas funcionalidades para auxiliar no desenvolvimento. Utilizando com a biblioteca SpringFox, conseguimos gerar especificações de forma simplificada. Além disso, com a utilização do Swagger, temos um módulo UI que permite a interação com a API em sandbox, ou seja, podemos testar fazendo requisições nos endpoints sem termos que recorrer a outras ferramentas, como por exemplo, o Postman.
+- Basicamente a classe abaixo é de configuração onde estamos habilitando o uso do Swagger e através do Docket definido como nosso Bean, nos permite configurar aspecto dos endpoints expostos por ele.
 
 ```java
 @Configuration
@@ -345,7 +344,10 @@ public class SwaggerConfig {
 }
 ```
 
-Explicação sobre Builder, PersonUtils (...)
+### :hammer: Testes unitários 
+
+Para realizarmos nossos testes unitários em nosso Service e Controller precisamos de ter o objeto mock para simularmos se está funcionando e capturando nossas validações. Para isso, foi necessário à criação de duas classes, sendo elas PersonUtil e TicketUtils que basicamente irão fornecer os objetos mockados para testarmos.
+
 
 ```java
 public class PersonUtils {
@@ -354,42 +356,44 @@ public class PersonUtils {
     private static final String EMAIL = "matheus@gmail.com";
 
     public static PersonResponseDTO generatePersonResponseDTO() {
-        return PersonResponseDTO
-                .builder()
-                .tickets(Collections.singletonList(TicketUtils.generateTicket()))
-                .build();
+        final var personResponseDTO = new PersonResponseDTO();
+
+        personResponseDTO.setTickets(Collections.singletonList(TicketUtils.generateTicket()));
+
+        return personResponseDTO;
     }
 
     public static PersonRequestDTO generatePersonRequestDTO() {
-        return PersonRequestDTO
-                .builder()
-                .email(EMAIL)
-                .build();
+        final var personRequestDTO = new PersonRequestDTO();
+
+        personRequestDTO.setEmail(EMAIL);
+
+        return personRequestDTO;
     }
 
     public static Person generatePerson() {
-        return Person.
-                builder()
-                .id(PERSON_ID)
-                .email(EMAIL)
-                .tickets(Collections.singletonList(TicketUtils.generateTicket()))
-                .build();
+        final var person = new Person();
+
+        person.setId(PERSON_ID);
+        person.setEmail(EMAIL);
+        person.setTickets(Collections.singletonList(TicketUtils.generateTicket()));
+
+        return person;
     }
 }
 ```
-
-Explicação sobre Builder, TicketUtils (...)
 
 ```java
 public class TicketUtils {
 
     public static Ticket generateTicket() {
-        return Ticket
-                .builder()
-                .id(1L)
-                .randomNumber(1)
-                .createdAt(LocalDateTime.MIN)
-                .build();
+        final var ticket = new Ticket();
+
+        ticket.setId(1L);
+        ticket.setRandomNumber(1);
+        ticket.setCreatedAt(LocalDateTime.MIN);
+
+        return ticket;
     }
 
 }
@@ -452,7 +456,6 @@ public class PersonControllerTest {
 
 }
 ```
-
 
 Explicação sobre anotações, PersonServiceTest, testes, mockito, hamcrest, junit (...)
 
