@@ -46,7 +46,24 @@ spring:
     password: admin
 ```
 
-Explicação sobre o modelo Person citando o Lombok e anotações (...)
+Após a configuração do banco de dados, foi realizado a criação das entidades que serão responsáveis por definir a Model e a estruturação da tabela no banco de dados. 
+
+Para facilitar no desenvolvimento da projeto, foi utilizado o Lombok que basicamente vai gerar nossos códigos em tempo de compilação. E para que seja utilizado, basta adicionar à dependência no Maven e também instalar um plugin para que a IDE consiga entender quais métodos criados pelas anotações e nos dê acesso a eles. E também uma das grandes vantagens da sua utilização é a diminuição da verbosidade das classes e dessa maneira conseguimos poupar tempo e ganhamos produtividade para aspectos mais cruciais de implementação.
+
+```
+- @Entity: Nossa classe Person é uma entidade que será mapeada no nosso banco de dados.
+- @Id/@GeneratedValue: O atributo anotado será a primary key da tabela e será gerado automaticamente usando a estratégia IDENTITY.
+- @NoArgsContructor: Adiciona um construtor vazio.
+- @AllArgsContructor: Cria um construtor com todos os atributos.
+- @Getter: Cria os getters.
+- @Setter: Cria os setters.
+- @EqualsAndHashCode: Cria o equals e hashcode.
+- @Table: Definição do nome da tabela do SQL (Se torna opcional, quando o nome que será dado é o mesmo da entidade)
+- @Column: É uma anotação que podemos personalizar o mapeamento entre o atributo e a coluna do banco de dados.
+- @OneToMany: Mapeia a associação no banco de dados.
+```
+
+A entidade Person foi pensada com base no problema proposto de que a pessoa deve ter seu e-mail associado à sua aposta, ou seja, os tickets. Sendo assim, fazendo o mapeamento de um para muitos. E como os tickets estão associados ao e-mail da pessoa, foi definido que o e-mail não pode ser null e também deve ser único.
 
 ```java
 @Getter
@@ -72,7 +89,7 @@ public class Person {
 }
 ```
 
-Explicação sobre o modelo Ticket citando o Lombok e anotações (...)
+A entidade ticket é responsável por gerar um número randômico que será o número referente a aposta. Com isso, também um dos requisitos era que fosse retornado em ordem de criação, para isso foi necessário um atributo de data de criação.
 
 ```java
 @Getter
@@ -142,7 +159,12 @@ public class PersonResponseDTO {
 }
 ```
 
-Explicação sobre Mapper, anotações (...)
+### :construction_worker: Mapper 
+
+Para realizarmos o mapeamento de DTOs, foi utilizado o framework MapStruct. É necessário esse mapeamento, devido que, por questões de boa prática não é recomendado expor entidades de domínio, pois, assim podemos evitar ataques malicíosos. E a vantagem de se utilizar dessa ferramenta por mais que seja simples mapear DTOs, quando a aplicação vai se tornando maior, ela vai garantir uma padronização e eventuais erros de mapeamento.
+
+@Mapper(componentModel = "spring") - passando esse parâmetro, estamos dizendo que será uma interface gerenciada pelo spring, podendo ser feita à injeção de dependências.
+
 
 ```java
 @Mapper(componentModel = "spring")
