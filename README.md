@@ -208,7 +208,7 @@ Nosso primeiro método **getOrCreate**, utiliza-se de outro método no primeiro 
 
 - Dessa forma foi criado um método que é capaz de criar uma nova pessoa com um ticket, ou, caso ela já tenha sido cadastrada previamente, somente é adicionado um ticket para ela.
 
-```
+```java
 @Override
     public PersonResponseDTO getOrCreate(PersonRequestDTO requestDTO) {
 
@@ -236,7 +236,7 @@ Nosso primeiro método **getOrCreate**, utiliza-se de outro método no primeiro 
 
 O segundo método irá (...)
 
-```
+```java
 @Override
     public PersonResponseDTO findBetByEmail(String email) throws PersonNotFoundException {
         return this.personRepository.findByEmail(email)
