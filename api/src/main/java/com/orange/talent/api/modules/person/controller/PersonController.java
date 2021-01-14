@@ -14,7 +14,6 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("api/v1/person")
 @Api(value = "API REST Lottery")
-@CrossOrigin(origins = "*")
 public class PersonController {
 
     private final PersonService personService;
