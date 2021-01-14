@@ -455,7 +455,7 @@ A imagem abaixo é nossa interface UI disponibilizada pela configuração do Swa
 
 Aqui estamos fazendo a requisição para criação de uma nova pessoa com seu ticket.
 
-![image](https://user-images.githubusercontent.com/30940498/104600535-e2ac0580-5657-11eb-8c30-05c006c10046.png)
+![image](https://user-images.githubusercontent.com/30940498/104605133-dfffdf00-565c-11eb-903d-75b544ff4cc8.png)
 
 Aqui recebemos a resposta da requisição com o ticket criado, associado com à pessoa.
 
@@ -465,6 +465,13 @@ Na imagem abaixo, foi realizado uma nova requisição para o mesmo endpoint, pas
 
 ![image](https://user-images.githubusercontent.com/30940498/104601220-bba20380-5658-11eb-820b-843e16f98f4c.png)
 
+Aqui estamos fazendo a requisição para recuperar os tickets associados a uma pessoa passando seu e-mail como parâmetro.
+
+![image](https://user-images.githubusercontent.com/30940498/104604809-85ff1980-565c-11eb-8e09-d5f57408617b.png)
+
+Na imagem abaixo, foi realizado uma requisição para o segundo endpoint, sendo passado o e-mail e tendo como resposta os tickets ordenados por ordem de criação.
+
+![image](https://user-images.githubusercontent.com/30940498/104604521-34ef2580-565c-11eb-9afd-ffdf52640f26.png)
 
 ### :hammer: Testes unitários 
 
