@@ -23,23 +23,20 @@
 
 ### 🛠 Iniciando o projeto
 
-Para iniciar o projeto iremos precisar de utilizar o banco de dados para persistir nossas informações, para isso utilizaremos o MySQL e faremos algumas configurações no arquivo: application.yml
+Para iniciar o projeto iremos precisar de utilizar o banco de dados para persistir nossas informações, para isso utilizaremos o MySQL e faremos algumas configurações no arquivo **application.yml** para o JPA/Hibernate com algumas informações de acesso ao banco de dados.
 
-Explicação sobre o banco de dados (...)
 
 ```yml
 spring:
   application:
     name: lottery
   jpa:
-    show-sql: false
+    show-sql: true
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
       dialect: org.hibernate.dialect.MySQL5InnoDBDialect
-  jmx:
-    enabled: false
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/lottery?allowPublicKeyRetrieval=true&sslMode=DISABLED&useSSL=false&useTimezone=true&serverTimezone=UTC
     username: root
@@ -118,15 +115,18 @@ public class Ticket {
     }
 ```
 
-Explicação sobre PersonRepository, anotações (...)
+A interface PersonRepository deverá estender da interface JpaRepository que vai ter todos os métodos que a gente precisa para fazer um CRUD e vai ser disponibilizado em tempo de execução pelo próprio Spring Data JPA. E como teve a necessidade de fazer uma consulta pelo e-mail, podemos fazer isso a partir da assinatura do método, dessa forma o Spring Data entende que deve fazer uma busca pelo e-mail que seja igual ao que foi passado por parâmetro.
+
+
+```
+@Repository: tem como objeto criar beans para a persistência dos dados, além de capturar excepções específicas de persistência.
+```
 
 ```java
 @Repository
 public interface PersonRepository extends JpaRepository<Person, Long> {
-    @Query(value = "FROM Person p "
-            + "WHERE p.email = :email"
-    )
-    Optional<Person> findByEmail(@Param("email") String email);
+    
+    Optional<Person> findByEmail(String email);
 }
 ```
 
@@ -155,7 +155,7 @@ public class PersonRequestDTO {
 }
 ```
 
-A classe PersonResponseDTO será nossa classe que será a responsa da nossa requisição, ou seja, seguindo as especificações quando fosse requisitado um e-mail de uma pessoa, deve-se retornar os números sorteados, portanto essa é a responsabilidade dessa classe que também há algumas anotações do Lombok para auxiliar no desenvolvimento.
+A classe PersonResponseDTO será nossa classe que será a resposta da nossa requisição, ou seja, seguindo as especificações quando fosse requisitado um e-mail de uma pessoa, deve-se retornar os números sorteados, portanto essa é a responsabilidade dessa classe que também há algumas anotações do Lombok para auxiliar no desenvolvimento.
 
 ```java
 @Data
@@ -208,7 +208,7 @@ Nosso primeiro método **getOrCreate**, utiliza-se de outro método no primeiro 
 
 - Dessa forma foi criado um método que é capaz de criar uma nova pessoa com um ticket, ou, caso ela já tenha sido cadastrada previamente, somente é adicionado um ticket para ela.
 
-```
+```java
 @Override
     public PersonResponseDTO getOrCreate(PersonRequestDTO requestDTO) {
 
@@ -234,9 +234,9 @@ Nosso primeiro método **getOrCreate**, utiliza-se de outro método no primeiro 
     
 ```
 
-O segundo método irá (...)
+O segundo método é responsável por chamar o repository que irá fazer uma consulta personalizada para buscar o e-mail na base de dados, caso houver, será feito um mapeamento para que seja feita à ordenação por ordem de criação e mapeado para o DTO. Caso, não encontre, será extourado uma exceção personalizada aonde indica que não foi encontrado a pessoa com esse e-mail.
 
-```
+```java
 @Override
     public PersonResponseDTO findBetByEmail(String email) throws PersonNotFoundException {
         return this.personRepository.findByEmail(email)
@@ -365,11 +365,25 @@ public class TicketServiceImpl implements TicketService {
 
 Explicação sobre PersonController, anotações, implicações ao se utilizar o CrossOrigin * (...)
 
+```
+@RestController: Indica que este controller por padrão responderá o formato JSON e se trata de um controller REST.
+@RequestMapping: Responsável por mapear as urls dos nossos métodos, ou seja, todos os métodos desse controller terão como base o "/api/v1/person".
+@Api: Utilizada para declarar uma API de recurso do Swagger, somente com essa anotação serão verificadas pelo Swagger.
+@PostMapping: Tratam de requisições POST das solicitações HTTP. 
+@GetMapping: Tratam de requisições GET das solicitações HTTP.
+@RequestBody: Indicamos o objeto PersonRequestDTO que deve ser buscado no corpo da requisição.
+@Valid: Indica que o objeto será validado tendo como base as anotações de validação que foram atribuídas anteriormente.
+@ResponseStatus: Utilizado para especificar o status de resposta HTTP.
+@ApiOperation: É utilizado para declarar a operação para o recurso de API e utilizando o *value* podemos fazer uma breve descrição.
+@PathVariable: Indica que o valor da variável será passado diretamente na URL, não como uma query, após "=?".
+```
+
+De acordo com às especificações da API REST deveríamos ter dois endpoints, onde o primeiro irá receber o e-mail da pessoa e retornar um objeto de resposta com os números sorteados para a aposta e o segundo endpoint deverá listar todas as apostas de um solicitante, passando o e-mail por parâmetro. Portanto, podemos observar que no primeiro endpoint esperamos no corpo da requisição um PersonRequestDTO que contém apenas o e-mail e o retorno sendo PersonResponseDTO que contém a lista de tickets (apostas), para realizar essa requisição, estamos utilizando o serviço criado anteriormente. No segundo endpoint recebemos um e-mail por parâmetro e nosso retorno da requisição também é um PersonResponseDTO que tem toda lista de tickets em ordem de criação.
+
 ```java
 @RestController
 @RequestMapping("api/v1/person")
 @Api(value = "API REST Lottery")
-@CrossOrigin(origins = "*")
 public class PersonController {
 
     private final PersonService personService;
@@ -433,10 +447,33 @@ public class SwaggerConfig {
 }
 ```
 
+A imagem abaixo é nossa interface UI disponibilizada pela configuração do Swagger que possibilitara de fazermos requisições de forma simplificada. 
+
+![image](https://user-images.githubusercontent.com/30940498/104593152-066a4e00-564e-11eb-9e79-924c6172257f.png)
+
+Aqui estamos fazendo a requisição para criação de uma nova pessoa com seu ticket.
+
+![image](https://user-images.githubusercontent.com/30940498/104605133-dfffdf00-565c-11eb-903d-75b544ff4cc8.png)
+
+Aqui recebemos a resposta da requisição com o ticket criado, associado com à pessoa.
+
+![image](https://user-images.githubusercontent.com/30940498/104600710-1edf6600-5658-11eb-9dfa-2c8dfc1ee75d.png)
+
+Na imagem abaixo, foi realizado uma nova requisição para o mesmo endpoint, passando o mesmo e-mail e dessa forma será criado um novo ticket associado com o usuário, garantindo que não seja repetido para o mesmo e-mail.
+
+![image](https://user-images.githubusercontent.com/30940498/104601220-bba20380-5658-11eb-820b-843e16f98f4c.png)
+
+Aqui estamos fazendo a requisição para recuperar os tickets associados a uma pessoa passando seu e-mail como parâmetro.
+
+![image](https://user-images.githubusercontent.com/30940498/104604809-85ff1980-565c-11eb-8e09-d5f57408617b.png)
+
+Na imagem abaixo, foi realizado uma requisição para o segundo endpoint, sendo passado o e-mail e tendo como resposta os tickets ordenados por ordem de criação.
+
+![image](https://user-images.githubusercontent.com/30940498/104604521-34ef2580-565c-11eb-9afd-ffdf52640f26.png)
+
 ### :hammer: Testes unitários 
 
 Para realizarmos nossos testes unitários em nosso Service e Controller precisamos de ter o objeto mock para simularmos se está funcionando e capturando nossas validações. Para isso, foi necessário à criação de duas classes, sendo elas PersonUtil e TicketUtils que basicamente irão fornecer os objetos mockados para testarmos.
-
 
 ```java
 public class PersonUtils {
@@ -488,7 +525,7 @@ public class TicketUtils {
 }
 ```
 
-Explicação sobre anotações, PersonControllerTest, testes, mockito, webTestClient (...)
+Para realizar testes unitários para o controller foi utilizado o **WebTestClient** que por mais que não tenha um ótimo desempenho por não utilizarem um contexto fatiado, conseguimos realizar um teste exatamente como o aplicativo é chamado em produção. E também foi utilizado o Mockito que é uma biblioteca de simulação, forcendo um mecanismo simplificado para adaptar o comportamento dos mocks, que foi verificado se o Service mock está sendo chamado exatamente uma vez quando é feito o request, juntamente com o webTestClient conseguimos garantir se o status e o corpo da resposta é o esperado. 
 
 ```java
 @SpringBootTest(
@@ -546,7 +583,7 @@ public class PersonControllerTest {
 }
 ```
 
-Explicação sobre anotações, PersonServiceTest, testes, mockito, hamcrest, junit (...)
+Para realizar os testes unitários no serviço foram utilizados algumas tecnologias para que esse processo fosse realizado, com isso, contamos com o mockito para simularmos o comportamento e conseguissemos testar a entrada e saída dos métodos se estão correspondendo como deveria, com auxílio também do hamcrest que possibilita mais legibilidade na hora de escrever assersões e possibilitando uma cobertura de testes unitários para os métodos utilizados no PersonService.
 
 ```java
 @SpringBootTest(
@@ -651,3 +688,5 @@ public class PersonServiceTest {
 ```
 
 ### Considerações finais
+
+A realização desse desafio foi de extrema importância para colocar diversos conhecimentos em prática e romper diversas barreiras para contruir uma API REST. E foi extremamente prazeroso por explicar passo à passo do desenvolvimento da aplicação, com isso, adquirindo ainda mais conhecimento com as ferramentas do ecossistema do Spring Boot.
