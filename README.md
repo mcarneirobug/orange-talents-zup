@@ -123,10 +123,8 @@ Explicação sobre PersonRepository, anotações (...)
 ```java
 @Repository
 public interface PersonRepository extends JpaRepository<Person, Long> {
-    @Query(value = "FROM Person p "
-            + "WHERE p.email = :email"
-    )
-    Optional<Person> findByEmail(@Param("email") String email);
+    
+    Optional<Person> findByEmail(String email);
 }
 ```
 
@@ -234,7 +232,7 @@ Nosso primeiro método **getOrCreate**, utiliza-se de outro método no primeiro 
     
 ```
 
-O segundo método irá (...)
+O segundo método é responsável por chamar o repository que irá fazer uma consulta personalizada para buscar o e-mail na base de dados, caso houver, será feito um mapeamento para que seja feita à ordenação por ordem de criação e mapeado para o DTO. Caso, não encontre, será extourado uma exceção personalizada aonde indica que não foi encontrado a pessoa com esse e-mail.
 
 ```java
 @Override
@@ -450,6 +448,23 @@ public class SwaggerConfig {
 
 }
 ```
+
+A imagem abaixo é nossa interface UI disponibilizada pela configuração do Swagger que possibilitara de fazermos requisições de forma simplificada. 
+
+![image](https://user-images.githubusercontent.com/30940498/104593152-066a4e00-564e-11eb-9e79-924c6172257f.png)
+
+Aqui estamos fazendo a requisição para criação de uma nova pessoa com seu ticket.
+
+![image](https://user-images.githubusercontent.com/30940498/104600535-e2ac0580-5657-11eb-8c30-05c006c10046.png)
+
+Aqui recebemos a resposta da requisição com o ticket criado, associado com à pessoa.
+
+![image](https://user-images.githubusercontent.com/30940498/104600710-1edf6600-5658-11eb-9dfa-2c8dfc1ee75d.png)
+
+Na imagem abaixo, foi realizado uma nova requisição para o mesmo endpoint, passando o mesmo e-mail e dessa forma será criado um novo ticket associado com o usuário, garantindo que não seja repetido para o mesmo e-mail.
+
+![image](https://user-images.githubusercontent.com/30940498/104601220-bba20380-5658-11eb-820b-843e16f98f4c.png)
+
 
 ### :hammer: Testes unitários 
 
