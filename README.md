@@ -155,7 +155,7 @@ public class PersonRequestDTO {
 }
 ```
 
-A classe PersonResponseDTO será nossa classe que será a responsa da nossa requisição, ou seja, seguindo as especificações quando fosse requisitado um e-mail de uma pessoa, deve-se retornar os números sorteados, portanto essa é a responsabilidade dessa classe que também há algumas anotações do Lombok para auxiliar no desenvolvimento.
+A classe PersonResponseDTO será nossa classe que será a resposta da nossa requisição, ou seja, seguindo as especificações quando fosse requisitado um e-mail de uma pessoa, deve-se retornar os números sorteados, portanto essa é a responsabilidade dessa classe que também há algumas anotações do Lombok para auxiliar no desenvolvimento.
 
 ```java
 @Data
@@ -364,6 +364,24 @@ public class TicketServiceImpl implements TicketService {
 ```
 
 Explicação sobre PersonController, anotações, implicações ao se utilizar o CrossOrigin * (...)
+
+```
+@RestController: Indica que este controller por padrão responderá o formato JSON e se trata de um controller REST.
+@RequestMapping: Responsável por mapear as urls dos nossos métodos, ou seja, todos os métodos desse controller terão como base o "/api/v1/person".
+@Api: Utilizada para declarar uma API de recurso do Swagger, somente com essa anotação serão verificadas pelo Swagger.
+
+@CrossOrigin: 
+
+@PostMapping: Tratam de requisições POST das solicitações HTTP. 
+@GetMapping: Tratam de requisições GET das solicitações HTTP.
+@RequestBody: Indicamos o objeto PersonRequestDTO que deve ser buscado no corpo da requisição.
+@Valid: Indica que o objeto será validado tendo como base as anotações de validação que foram atribuídas anteriormente.
+@ResponseStatus: Utilizado para especificar o status de resposta HTTP.
+@ApiOperation: É utilizado para declarar a operação para o recurso de API e utilizando o *value* podemos fazer uma breve descrição.
+@PathVariable: Indica que o valor da variável será passado diretamente na URL, não como uma query, após "=?".
+```
+
+De acordo com às especificações da API REST deveríamos ter dois endpoints, onde o primeiro irá receber o e-mail da pessoa e retornar um objeto de resposta com os números sorteados para a aposta e o segundo endpoint deverá listar todas as apostas de um solicitante, passando o e-mail por parâmetro. Portanto, podemos observar que no primeiro endpoint esperamos no corpo da requisição um PersonRequestDTO que contém apenas o e-mail e o retorno sendo PersonResponseDTO que contém a lista de tickets (apostas), para realizar essa requisição, estamos utilizando o serviço criado anteriormente. No segundo endpoint recebemos um e-mail por parâmetro e nosso retorno da requisição também é um PersonResponseDTO que tem toda lista de tickets em ordem de criação.
 
 ```java
 @RestController
