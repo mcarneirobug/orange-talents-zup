@@ -23,23 +23,20 @@
 
 ### 🛠 Iniciando o projeto
 
-Para iniciar o projeto iremos precisar de utilizar o banco de dados para persistir nossas informações, para isso utilizaremos o MySQL e faremos algumas configurações no arquivo: application.yml
+Para iniciar o projeto iremos precisar de utilizar o banco de dados para persistir nossas informações, para isso utilizaremos o MySQL e faremos algumas configurações no arquivo **application.yml** para o JPA/Hibernate com algumas informações de acesso ao banco de dados.
 
-Explicação sobre o banco de dados (...)
 
 ```yml
 spring:
   application:
     name: lottery
   jpa:
-    show-sql: false
+    show-sql: true
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
       dialect: org.hibernate.dialect.MySQL5InnoDBDialect
-  jmx:
-    enabled: false
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/lottery?allowPublicKeyRetrieval=true&sslMode=DISABLED&useSSL=false&useTimezone=true&serverTimezone=UTC
     username: root
@@ -118,7 +115,12 @@ public class Ticket {
     }
 ```
 
-Explicação sobre PersonRepository, anotações (...)
+A interface PersonRepository deverá estender da interface JpaRepository que vai ter todos os métodos que a gente precisa para fazer um CRUD e vai ser disponibilizado em tempo de execução pelo próprio Spring Data JPA. E como teve a necessidade de fazer uma consulta pelo e-mail, podemos fazer isso a partir da assinatura do método, dessa forma o Spring Data entende que deve fazer uma busca pelo e-mail que seja igual ao que foi passado por parâmetro.
+
+
+```
+@Repository: tem como objeto criar beans para a persistência dos dados, além de capturar excepções específicas de persistência.
+```
 
 ```java
 @Repository
@@ -367,9 +369,6 @@ Explicação sobre PersonController, anotações, implicações ao se utilizar o
 @RestController: Indica que este controller por padrão responderá o formato JSON e se trata de um controller REST.
 @RequestMapping: Responsável por mapear as urls dos nossos métodos, ou seja, todos os métodos desse controller terão como base o "/api/v1/person".
 @Api: Utilizada para declarar uma API de recurso do Swagger, somente com essa anotação serão verificadas pelo Swagger.
-
-@CrossOrigin: 
-
 @PostMapping: Tratam de requisições POST das solicitações HTTP. 
 @GetMapping: Tratam de requisições GET das solicitações HTTP.
 @RequestBody: Indicamos o objeto PersonRequestDTO que deve ser buscado no corpo da requisição.
@@ -385,7 +384,6 @@ De acordo com às especificações da API REST deveríamos ter dois endpoints, o
 @RestController
 @RequestMapping("api/v1/person")
 @Api(value = "API REST Lottery")
-@CrossOrigin(origins = "*")
 public class PersonController {
 
     private final PersonService personService;
@@ -477,7 +475,6 @@ Na imagem abaixo, foi realizado uma requisição para o segundo endpoint, sendo 
 
 Para realizarmos nossos testes unitários em nosso Service e Controller precisamos de ter o objeto mock para simularmos se está funcionando e capturando nossas validações. Para isso, foi necessário à criação de duas classes, sendo elas PersonUtil e TicketUtils que basicamente irão fornecer os objetos mockados para testarmos.
 
-
 ```java
 public class PersonUtils {
 
@@ -528,7 +525,7 @@ public class TicketUtils {
 }
 ```
 
-Explicação sobre anotações, PersonControllerTest, testes, mockito, webTestClient (...)
+Para realizar testes unitários para o controller foi utilizado o **WebTestClient** que por mais que não tenha um ótimo desempenho por não utilizarem um contexto fatiado, conseguimos realizar um teste exatamente como o aplicativo é chamado em produção. E também foi utilizado o Mockito que é uma biblioteca de simulação, forcendo um mecanismo simplificado para adaptar o comportamento dos mocks, que foi verificado se o Service mock está sendo chamado exatamente uma vez quando é feito o request, juntamente com o webTestClient conseguimos garantir se o status e o corpo da resposta é o esperado. 
 
 ```java
 @SpringBootTest(
@@ -586,7 +583,7 @@ public class PersonControllerTest {
 }
 ```
 
-Explicação sobre anotações, PersonServiceTest, testes, mockito, hamcrest, junit (...)
+Para realizar os testes unitários no serviço foram utilizados algumas tecnologias para que esse processo fosse realizado, com isso, contamos com o mockito para simularmos o comportamento e conseguissemos testar a entrada e saída dos métodos se estão correspondendo como deveria, com auxílio também do hamcrest que possibilita mais legibilidade na hora de escrever assersões e possibilitando uma cobertura de testes unitários para os métodos utilizados no PersonService.
 
 ```java
 @SpringBootTest(
@@ -691,3 +688,5 @@ public class PersonServiceTest {
 ```
 
 ### Considerações finais
+
+A realização desse desafio foi de extrema importância para colocar diversos conhecimentos em prática e romper diversas barreiras para contruir uma API REST. E foi extremamente prazeroso por explicar passo à passo do desenvolvimento da aplicação, com isso, adquirindo ainda mais conhecimento com as ferramentas do ecossistema do Spring Boot.
