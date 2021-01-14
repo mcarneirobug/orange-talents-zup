@@ -302,7 +302,7 @@ public class PersonServiceImpl implements PersonService {
 }
 ```
 
-Explicação sobre exception custom (...)
+Classe responsável por retornar uma exceção de forma personalizada quando não encontrar um usuário, para que não retorne uma exceção padrão e fique mais claro para quem está consumindo a API entender o que aconteceu.
 
 ```java
 @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -326,8 +326,6 @@ public interface TicketService {
 
 }
 ```
-
-Explicação sobre TicketServiceImpl, anotações (...)
 
 ```
 @Service: Usamos esta anotação para que o framework enxergue nossa classe e indicamos que esta classe é um serviço.
@@ -362,8 +360,6 @@ public class TicketServiceImpl implements TicketService {
     }
 }
 ```
-
-Explicação sobre PersonController, anotações, implicações ao se utilizar o CrossOrigin * (...)
 
 ```
 @RestController: Indica que este controller por padrão responderá o formato JSON e se trata de um controller REST.
@@ -470,6 +466,10 @@ Aqui estamos fazendo a requisição para recuperar os tickets associados a uma p
 Na imagem abaixo, foi realizado uma requisição para o segundo endpoint, sendo passado o e-mail e tendo como resposta os tickets ordenados por ordem de criação.
 
 ![image](https://user-images.githubusercontent.com/30940498/104604521-34ef2580-565c-11eb-9afd-ffdf52640f26.png)
+
+Caso seja passado um e-mail que não se encontra na base de dados, com o tratamento personalizado de exceção será retornado para quem está consumindo a API:
+
+![image](https://user-images.githubusercontent.com/30940498/104656974-f4fd6200-569e-11eb-95fa-cdd39d223a56.png)
 
 ### :hammer: Testes unitários 
 
