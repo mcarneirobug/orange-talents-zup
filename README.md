@@ -689,4 +689,4 @@ public class PersonServiceTest {
 
 ### Considerações finais
 
-A realização desse desafio foi de extrema importância para colocar diversos conhecimentos em prática e romper diversas barreiras para contruir uma API REST. E foi extremamente prazeroso por explicar passo à passo do desenvolvimento da aplicação, com isso, adquirindo ainda mais conhecimento com as ferramentas do ecossistema do Spring Boot.
+A realização desse desafio foi de extrema importância para colocar diversos conhecimentos em prática e romper diversas barreiras para contruir uma API REST. E foi extremamente prazeroso por explicar passo à passo do desenvolvimento da aplicação, com isso, adquirindo ainda mais conhecimento com as ferramentas do ecossistema do Spring Boot. Para resolver o item bônus, para garantir que não houvesse e-mails duplicados foi definido no mapeamento do banco de dados travando diretamente no banco que o campo seria unique e para garantir que não houvesse sequências de números iguais foi criado um método para fazer essa verificação com duas validações para garantir que não esteja sendo gerado sequências duplicadas para o mesmo e-mail.
