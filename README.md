@@ -691,3 +691,5 @@ Pensando na segurança dos dados que serão persistidos e consumidos da nossa ba
 ### Considerações finais
 
 A realização desse desafio foi de extrema importância para colocar diversos conhecimentos em prática e romper diversas barreiras para construir uma API REST. E foi extremamente prazeroso por explicar passo a passo do desenvolvimento da aplicação, com isso, adquirindo ainda mais conhecimento com as ferramentas do ecossistema do Spring Boot. Para resolver o item bônus, para garantir que não houvesse e-mails duplicados foi definido no mapeamento do banco de dados um travamento que o campo seria *unique* e para garantir que não houvesse sequências de números iguais foi criado um método para fazer essa verificação com duas validações para garantir que não esteja sendo gerado sequências duplicadas para o mesmo e-mail.
+
+Repositório com o código completo está disponível no link: https://github.com/mcarneirobug/orange-talents-zup
