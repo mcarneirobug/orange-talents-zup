@@ -10,17 +10,6 @@
 
 - Também devemos construir um segundo endpoint para listar todas as apostas de um solicitante, passando seu e-mail como parâmetro, o sistema deverá retornar em ordem de criação todas as suas apostas.
 
-### O que deve ter 
-
-- Explique quais as tecnologias do mundo Spring você usaria.
-- Conte qual o papel das tecnologias escolhidas e quais benefícios elas trazem para a implementação do código.
-- Diga quais classes seriam criadas nesse processo e traga trechos autorais explicando a construção de cada classe do código.
-- Explique as etapas do processo de construção do seu código e como faria a implementação do sistema na Web.
-
-### Item Bônus
-
-- Se ficou fácil, considere que você também precisa explicar como faria para proteger a aplicação de e-mails duplicados e sequências de números iguais para o mesmo email.
-
 ### 🛠 Iniciando o projeto
 
 Para iniciar o projeto iremos precisar de utilizar o banco de dados para persistir nossas informações, para isso utilizaremos o MySQL e faremos algumas configurações no arquivo **application.yml** para o JPA/Hibernate com algumas informações de acesso ao banco de dados.
@@ -45,7 +34,7 @@ spring:
 
 Após a configuração do banco de dados, foi realizado a criação das entidades que serão responsáveis por definir a Model e a estruturação da tabela no banco de dados. 
 
-Para facilitar no desenvolvimento da projeto, foi utilizado o Lombok que basicamente vai gerar nossos códigos em tempo de compilação. E para que seja utilizado, basta adicionar à dependência no Maven e também instalar um plugin para que a IDE consiga entender quais métodos criados pelas anotações e nos dê acesso a eles. E também uma das grandes vantagens da sua utilização é a diminuição da verbosidade das classes e dessa maneira conseguimos poupar tempo e ganhamos produtividade para aspectos mais cruciais de implementação.
+Para facilitar no desenvolvimento do projeto, foi utilizado o **Lombok** que basicamente vai gerar nossos códigos em tempo de compilação. E para que seja utilizado, basta adicionar à dependência no Maven e também instalar um plugin para que a IDE consiga entender quais são os métodos criados pelas anotações e nos dê acesso a eles. E também uma das grandes vantagens da sua utilização é a diminuição da verbosidade das classes e dessa maneira conseguimos poupar tempo e ganhamos produtividade para aspectos mais cruciais de implementação. 
 
 ```
 - @Entity: Nossa classe Person é uma entidade que será mapeada no nosso banco de dados.
@@ -60,7 +49,7 @@ Para facilitar no desenvolvimento da projeto, foi utilizado o Lombok que basicam
 - @OneToMany: Mapeia a associação no banco de dados.
 ```
 
-A entidade Person foi pensada com base no problema proposto de que a pessoa deve ter seu e-mail associado à sua aposta, ou seja, os tickets. Sendo assim, fazendo o mapeamento de um para muitos. E como os tickets estão associados ao e-mail da pessoa, foi definido que o e-mail não pode ser null e também deve ser único.
+A entidade **Person** foi pensada com base no problema proposto de que a pessoa deve ter seu e-mail associado à sua aposta, ou seja, os tickets. Sendo assim, fazendo o mapeamento de um para muitos. E como os tickets estão associados ao e-mail da pessoa, foi definido que o e-mail não pode ser null e também deve ser único para garantir que não ocorra duplicidade. 
 
 ```java
 @Getter
@@ -86,7 +75,7 @@ public class Person {
 }
 ```
 
-A entidade ticket é responsável por gerar um número randômico que será o número referente a aposta. Com isso, também um dos requisitos era que fosse retornado em ordem de criação, para isso foi necessário um atributo de data de criação. E para gerar o número randômico foi criado um método que vai gerar uma sequência aleatória utilizando a classe Random do próprio Java.
+A entidade **Ticket** é responsável por gerar um número randômico que será o número referente a aposta. Com isso, também um dos requisitos era que fosse retornado em ordem de criação, para isso foi necessário um atributo de data de criação. E para gerar o número randômico foi criado um método que vai gerar uma sequência aleatória utilizando a classe **Random** do próprio Java. 
 
 ```java
 @Getter
@@ -115,7 +104,7 @@ public class Ticket {
     }
 ```
 
-A interface PersonRepository deverá estender da interface JpaRepository que vai ter todos os métodos que a gente precisa para fazer um CRUD e vai ser disponibilizado em tempo de execução pelo próprio Spring Data JPA. E como teve a necessidade de fazer uma consulta pelo e-mail, podemos fazer isso a partir da assinatura do método, dessa forma o Spring Data entende que deve fazer uma busca pelo e-mail que seja igual ao que foi passado por parâmetro.
+A interface **PersonRepository** deverá estender da interface **JpaRepository** que vai nos prover os métodos necessários para fazer um CRUD e vai ser disponibilizado em tempo de execução pelo próprio Spring Data JPA. E como teve a necessidade de fazer uma consulta pelo e-mail, podemos fazer isso a partir da assinatura do método, dessa forma o Spring Data entende que deve fazer uma busca pelo e-mail que seja igual ao que foi passado por parâmetro. 
 
 
 ```
@@ -130,7 +119,7 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
 }
 ```
 
-A classe PersonRequestDTO foi pensada com base no requisito de que devemos passar apenas o e-mail da pessoa para que fosse retornado os números sorteados, com isso, foi utilizado o padrão DTO que permite que a gente não exponha o modelo de domínio.
+A classe **PersonRequestDTO** foi pensada com base no requisito de que devemos passar apenas o e-mail da pessoa, para que, fosse retornado somente os números sorteados, devido a isso, foi utilizado o padrão DTO que permite que a gente não exponha o modelo de domínio. 
 
 - Para a estruturação dessa classe foi utilizado anotações do Lombok, Swagger e também do hibernate validator.
 
@@ -155,7 +144,7 @@ public class PersonRequestDTO {
 }
 ```
 
-A classe PersonResponseDTO será nossa classe que será a resposta da nossa requisição, ou seja, seguindo as especificações quando fosse requisitado um e-mail de uma pessoa, deve-se retornar os números sorteados, portanto essa é a responsabilidade dessa classe que também há algumas anotações do Lombok para auxiliar no desenvolvimento.
+A classe **PersonResponseDTO** será nossa classe que será a resposta da nossa requisição, ou seja, seguindo as especificações quando fosse requisitado um e-mail de uma pessoa, deve-se retornar os números sorteados, portanto essa é a responsabilidade dessa classe que também há algumas anotações do Lombok para auxiliar no desenvolvimento. 
 
 ```java
 @Data
@@ -170,7 +159,7 @@ public class PersonResponseDTO {
 
 ### :construction_worker: Mapper 
 
-Para realizarmos o mapeamento de DTOs, foi utilizado o framework MapStruct. É necessário esse mapeamento, devido que, por questões de boa prática não é recomendado expor entidades de domínio, pois, assim podemos evitar ataques malicíosos. E a vantagem de se utilizar dessa ferramenta por mais que seja simples mapear DTOs, quando a aplicação vai se tornando maior, ela vai garantir uma padronização e eventuais erros de mapeamento.
+Para realizarmos o mapeamento de DTOs, foi utilizado o framework MapStruct. É necessário esse mapeamento, devido que, por questões de boa prática não é recomendado expor entidades de domínio, pois, assim podemos evitar ataques maliciosos. E a vantagem de se utilizar dessa ferramenta por mais que seja simples mapear DTOs, quando a aplicação vai se tornando maior, ela vai garantir uma padronização e eventuais erros de mapeamento. 
 
 @Mapper(componentModel = "spring") - passando esse parâmetro, estamos dizendo que será uma interface gerenciada pelo spring, podendo ser feita à injeção de dependências.
 
@@ -189,10 +178,10 @@ public interface PersonMapper {
 
 O serviço irá conter dois métodos e para isso foi criado um contrato criando uma interface para que fosse implementada posteriormente.
 
-- O primeiro método getOrCreate, basicamente é responsável por criar uma nova pessoa com um ticket, porém caso for inserido novamente o mesmo e-mail, será apenas criado um novo ticket para aquele determinado usuário.
-- O segundo método findBetByEmail, é responsável por buscar a pessoa pelo seu e-mail e ordenando seus tickets por ordem de criação e caso não encontre é retornado uma exceção personalizada.
+- O primeiro método **getOrCreate**, basicamente é responsável por criar uma nova pessoa com um ticket, porém, caso for inserido novamente o mesmo e-mail, será apenas criado um novo ticket para aquele determinado usuário.
+- O segundo método **findBetByEmail**, é responsável por buscar a pessoa pelo seu e-mail e ordenar seus tickets por ordem de criação e caso não encontre é retornado uma exceção personalizada.
 
-Podemos observarmos que tanto o retorno e o parâmetro passado é utilizado os DTOs para que não exponha nossa entidade de domínio.
+Podemos observar que tanto o retorno e o parâmetro passado são utilizados os DTOs para que não exponha nossa entidade de domínio. 
 
 ```java
 public interface PersonService {
@@ -204,7 +193,7 @@ public interface PersonService {
 }
 ```
 
-Nosso primeiro método **getOrCreate**, utiliza-se de outro método no primeiro momento que será responsável por verificar se o e-mail passado se encontra na nossa base de dados, caso houver, iremos utilizar de outro método que está de responsabilidade do TicketService que é responsável por gerar um novo ticket para esse e-mail, já fazendo a validação para que não seja um ticket repetido para o mesmo e-mail. Caso não for encontrado nenhum e-mail, ele já vai retornar o objeto mapeado que será gerado um novo ticket para ele e por fim, será salvo na base de dados. 
+Nosso primeiro método **getOrCreate**, utiliza-se de outro método no primeiro momento que será responsável por verificar se o e-mail passado se encontra na nossa base de dados, caso houver, iremos utilizar de outro método que está de responsabilidade do **TicketService** que irá gerar um novo ticket para esse e-mail, já fazendo a validação para que não seja um ticket repetido para o mesmo e-mail. Caso não for encontrado nenhum e-mail, ele já vai retornar o objeto mapeado que será gerado uma nova pessoa com um novo ticket e por fim, será salvo na base de dados. 
 
 - Dessa forma foi criado um método que é capaz de criar uma nova pessoa com um ticket, ou, caso ela já tenha sido cadastrada previamente, somente é adicionado um ticket para ela.
 
@@ -234,7 +223,7 @@ Nosso primeiro método **getOrCreate**, utiliza-se de outro método no primeiro 
     
 ```
 
-O segundo método é responsável por chamar o repository que irá fazer uma consulta personalizada para buscar o e-mail na base de dados, caso houver, será feito um mapeamento para que seja feita à ordenação por ordem de criação e mapeado para o DTO. Caso, não encontre, será extourado uma exceção personalizada aonde indica que não foi encontrado a pessoa com esse e-mail.
+O segundo método é responsável por chamar o **repository** que irá fazer uma consulta personalizada para buscar o e-mail na base de dados, caso houver, será feito um mapeamento para que seja feita à ordenação por ordem de criação e mapeado para o DTO. Caso, não encontre, será estourado uma exceção personalizada onde indica que não foi encontrado a pessoa com esse e-mail. 
 
 ```java
 @Override
@@ -302,7 +291,7 @@ public class PersonServiceImpl implements PersonService {
 }
 ```
 
-Classe responsável por retornar uma exceção de forma personalizada quando não encontrar um usuário, para que não retorne uma exceção padrão e fique mais claro para quem está consumindo a API entender o que aconteceu.
+Classe responsável por retornar uma exceção de forma personalizada quando não encontrar um usuário, para que não retorne uma exceção padrão e fique mais claro para quem está consumindo a API entender o erro que ocorreu. 
 
 ```java
 @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -331,7 +320,8 @@ public interface TicketService {
 @Service: Usamos esta anotação para que o framework enxergue nossa classe e indicamos que esta classe é um serviço.
 ```
 
-O método criado basicamente irá instanciar um novo ticket, com a geração automática de um novo número aleatório e iremos iterar por todos os tickets passado por parâmetro e irá checar se forem iguais, caso for, será gerado um novo ticket e se caso esse novo ticket gerado ainda tenha à probabilidade de ser igual, será dado um log de error informando.
+O método criado irá instanciar um novo ticket, o próximo passo será iterar pelo ticket passado por parâmetro que vai receber os tickets armazenados no banco de dados (que será utilizado em outro método) e para garantir que não ocorra duplicidade, iremos verificar se o ticket armazenado é igual ao gerado, caso for, será configurado um novo sorteio, porém, caso esse ticket configurado ainda seja igual à algum ticket previamente cadastrador no banco, será retornado um log de erro informando que o ticket já foi gerado anteriormente.
+
 
 ```java
 @Service
@@ -374,7 +364,7 @@ public class TicketServiceImpl implements TicketService {
 @PathVariable: Indica que o valor da variável será passado diretamente na URL, não como uma query, após "=?".
 ```
 
-De acordo com às especificações da API REST deveríamos ter dois endpoints, onde o primeiro irá receber o e-mail da pessoa e retornar um objeto de resposta com os números sorteados para a aposta e o segundo endpoint deverá listar todas as apostas de um solicitante, passando o e-mail por parâmetro. Portanto, podemos observar que no primeiro endpoint esperamos no corpo da requisição um PersonRequestDTO que contém apenas o e-mail e o retorno sendo PersonResponseDTO que contém a lista de tickets (apostas), para realizar essa requisição, estamos utilizando o serviço criado anteriormente. No segundo endpoint recebemos um e-mail por parâmetro e nosso retorno da requisição também é um PersonResponseDTO que tem toda lista de tickets em ordem de criação.
+De acordo com às especificações da API REST deveríamos ter dois *endpoints*, onde o primeiro irá receber o e-mail da pessoa e vai retornar um objeto de resposta com os números sorteados para a aposta e o segundo *endpoint* deve listar todas as apostas de um solicitante, passando o e-mail por parâmetro. Portanto, podemos observar que no primeiro *endpoint* esperamos no corpo da requisição um PersonRequestDTO que contém apenas o e-mail e o retorno sendo PersonResponseDTO que contém a lista de tickets (apostas). No segundo *endpoint* recebemos um e-mail por parâmetro e nosso retorno da requisição também é um PersonResponseDTO que tem toda lista de tickets em ordem de criação. Logo, para realizar essas requisições feitas, estamos utilizando o serviço criado anteriormente. 
 
 ```java
 @RestController
@@ -407,7 +397,7 @@ public class PersonController {
 
 ### Swagger
 
-- Acredito que toda API necessite ter uma documentação, pensando nisso, foi-se utilizado o Swagger que trás diversas funcionalidades para auxiliar no desenvolvimento. Utilizando com a biblioteca SpringFox, conseguimos gerar especificações de forma simplificada. Além disso, com a utilização do Swagger, temos um módulo UI que permite a interação com a API em sandbox, ou seja, podemos testar fazendo requisições nos endpoints sem termos que recorrer a outras ferramentas, como por exemplo, o Postman.
+- Acredito que toda API necessite ter uma documentação, pensando nisso, foi-se utilizado o Swagger que trás diversas funcionalidades para auxiliar no desenvolvimento. Utilizando com a biblioteca SpringFox, conseguimos gerar especificações de forma simplificada. Além disso, com a utilização do Swagger, temos um módulo UI que permite a interação com a API em **sandbox**, ou seja, podemos testar fazendo requisições nos *endpoints* sem termos que recorrer a outras ferramentas, como por exemplo, o Postman.
 - Basicamente a classe abaixo é de configuração onde estamos habilitando o uso do Swagger e através do Docket definido como nosso Bean, nos permite configurar aspecto dos endpoints expostos por ele.
 
 ```java
@@ -447,23 +437,23 @@ A imagem abaixo é nossa interface UI disponibilizada pela configuração do Swa
 
 ![image](https://user-images.githubusercontent.com/30940498/104593152-066a4e00-564e-11eb-9e79-924c6172257f.png)
 
-Aqui estamos fazendo a requisição para criação de uma nova pessoa com seu ticket.
+Neste momento, estamos fazendo a requisição para criação de uma nova pessoa com seu ticket.
 
 ![image](https://user-images.githubusercontent.com/30940498/104605133-dfffdf00-565c-11eb-903d-75b544ff4cc8.png)
 
-Aqui recebemos a resposta da requisição com o ticket criado, associado com à pessoa.
+Neste ponto, recebemos a resposta da requisição com o ticket criado, associado com à pessoa.
 
 ![image](https://user-images.githubusercontent.com/30940498/104600710-1edf6600-5658-11eb-9dfa-2c8dfc1ee75d.png)
 
-Na imagem abaixo, foi realizado uma nova requisição para o mesmo endpoint, passando o mesmo e-mail e dessa forma será criado um novo ticket associado com o usuário, garantindo que não seja repetido para o mesmo e-mail.
+Na imagem abaixo, foi realizado uma nova requisição para o mesmo *endpoint*, passando o mesmo e-mail e dessa forma será criado um novo ticket associado ao usuário, garantindo que não seja repetido o número sorteado para o mesmo e-mail.
 
 ![image](https://user-images.githubusercontent.com/30940498/104601220-bba20380-5658-11eb-820b-843e16f98f4c.png)
 
-Aqui estamos fazendo a requisição para recuperar os tickets associados a uma pessoa passando seu e-mail como parâmetro.
+Neste ponto, estamos fazendo a requisição para recuperar os tickets associados a uma pessoa passando seu e-mail como parâmetro.
 
 ![image](https://user-images.githubusercontent.com/30940498/104604809-85ff1980-565c-11eb-8e09-d5f57408617b.png)
 
-Na imagem abaixo, foi realizado uma requisição para o segundo endpoint, sendo passado o e-mail e tendo como resposta os tickets ordenados por ordem de criação.
+Na imagem abaixo, foi realizado uma requisição para o segundo *endpoint*, sendo passado o e-mail e tendo como resposta os tickets ordenados por ordem de criação.
 
 ![image](https://user-images.githubusercontent.com/30940498/104604521-34ef2580-565c-11eb-9afd-ffdf52640f26.png)
 
@@ -525,7 +515,7 @@ public class TicketUtils {
 }
 ```
 
-Para realizar testes unitários para o controller foi utilizado o **WebTestClient** que por mais que não tenha um ótimo desempenho por não utilizarem um contexto fatiado, conseguimos realizar um teste exatamente como o aplicativo é chamado em produção. E também foi utilizado o Mockito que é uma biblioteca de simulação, forcendo um mecanismo simplificado para adaptar o comportamento dos mocks, que foi verificado se o Service mock está sendo chamado exatamente uma vez quando é feito o request, juntamente com o webTestClient conseguimos garantir se o status e o corpo da resposta é o esperado. 
+Para realizarmos testes unitários para o **controller** foi utilizado o **WebTestClient** que por mais que não tenha um ótimo desempenho em relação ao **MockMvc** por não utilizar um contexto fatiado, quando utilizamos dele, temos a possibilidade de realizar um teste exatamente como a aplicação é chamada em produção. E também foi utilizado o Mockito que é uma biblioteca de simulação, que fornece um mecanismo simplificado para adaptar ao comportamento dos mocks. Onde, foi verificado se o PersonService está sendo chamado corretamente exatamente uma vez quando é feito o request para o *endpoint* e também juntamente com a injeção de dependência com o **webTestClient** conseguimos garantir se o status e o corpo da resposta são o esperados.
 
 ```java
 @SpringBootTest(
@@ -583,7 +573,7 @@ public class PersonControllerTest {
 }
 ```
 
-Para realizar os testes unitários no serviço foram utilizados algumas tecnologias para que esse processo fosse realizado, com isso, contamos com o mockito para simularmos o comportamento e conseguissemos testar a entrada e saída dos métodos se estão correspondendo como deveria, com auxílio também do hamcrest que possibilita mais legibilidade na hora de escrever assersões e possibilitando uma cobertura de testes unitários para os métodos utilizados no PersonService.
+Para realizar os testes unitários no serviço foram utilizadas algumas tecnologias para que esse processo fosse realizado, com isso, contamos com o mockito para simularmos o comportamento e conseguíssemos testar a entrada e saída dos métodos se estão correspondendo como deveria, com auxílio também do hamcrest que possibilita mais legibilidade na hora de escrever asserções e possibilitando uma cobertura de testes unitários para os métodos utilizados no PersonService.
 
 ```java
 @SpringBootTest(
@@ -689,4 +679,4 @@ public class PersonServiceTest {
 
 ### Considerações finais
 
-A realização desse desafio foi de extrema importância para colocar diversos conhecimentos em prática e romper diversas barreiras para contruir uma API REST. E foi extremamente prazeroso por explicar passo à passo do desenvolvimento da aplicação, com isso, adquirindo ainda mais conhecimento com as ferramentas do ecossistema do Spring Boot. Para resolver o item bônus, para garantir que não houvesse e-mails duplicados foi definido no mapeamento do banco de dados travando diretamente no banco que o campo seria unique e para garantir que não houvesse sequências de números iguais foi criado um método para fazer essa verificação com duas validações para garantir que não esteja sendo gerado sequências duplicadas para o mesmo e-mail.
+A realização desse desafio foi de extrema importância para colocar diversos conhecimentos em prática e romper diversas barreiras para construir uma API REST. E foi extremamente prazeroso por explicar passo a passo do desenvolvimento da aplicação, com isso, adquirindo ainda mais conhecimento com as ferramentas do ecossistema do Spring Boot. Para resolver o item bônus, para garantir que não houvesse e-mails duplicados foi definido no mapeamento do banco de dados um travamento que o campo seria *unique* e para garantir que não houvesse sequências de números iguais foi criado um método para fazer essa verificação com duas validações para garantir que não esteja sendo gerado sequências duplicadas para o mesmo e-mail.
