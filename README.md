@@ -1,8 +1,8 @@
 <h1 align="center">
-    <span href="">Orange Talent - Desafio ZUP :rocket: </span>
+    <span href="">Orange Talent - Desafio ZUP </span>
 </h1>
 
-### 💻 Sobre o Projeto
+### Sobre o Projeto
 
 - Criar uma API REST que precisará gerar números aleatórios para loteria. Para facilitar na identificação da pessoa, você deverá associar cada número a um e-mail.
 
@@ -10,7 +10,7 @@
 
 - Também devemos construir um segundo endpoint para listar todas as apostas de um solicitante, passando seu e-mail como parâmetro, o sistema deverá retornar em ordem de criação todas as suas apostas.
 
-### 🛠 Iniciando o projeto
+### Iniciando o projeto
 
 Para iniciar o projeto iremos precisar de utilizar o banco de dados para persistir nossas informações, para isso utilizaremos o MySQL e faremos algumas configurações no arquivo **application.yml** para o JPA/Hibernate com algumas informações de acesso ao banco de dados.
 
@@ -160,7 +160,7 @@ public class PersonResponseDTO {
 }
 ```
 
-### :construction_worker: Mapper 
+### Mapper 
 
 Para realizarmos o mapeamento de DTOs, foi utilizado o framework MapStruct. É necessário esse mapeamento, devido que, por questões de boa prática não é recomendado expor entidades de domínio, pois, assim podemos evitar ataques maliciosos. E a vantagem de se utilizar dessa ferramenta por mais que seja simples mapear DTOs, quando a aplicação vai se tornando maior, ela vai garantir uma padronização e eventuais erros de mapeamento. 
 
@@ -468,7 +468,7 @@ Caso seja passado um e-mail que não se encontra na base de dados, com o tratame
 
 ![image](https://user-images.githubusercontent.com/30940498/104656974-f4fd6200-569e-11eb-95fa-cdd39d223a56.png)
 
-### :hammer: Testes unitários 
+### Testes unitários 
 
 Para realizarmos nossos testes unitários em nosso Service e Controller precisamos de ter o objeto mock para simularmos se está funcionando e capturando nossas validações. Para isso, foi necessário à criação de duas classes, sendo elas PersonUtil e TicketUtils que basicamente irão fornecer os objetos mockados para testarmos.
 
