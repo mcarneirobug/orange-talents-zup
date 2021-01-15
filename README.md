@@ -27,7 +27,8 @@ spring:
       hibernate:
       dialect: org.hibernate.dialect.MySQL5InnoDBDialect
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/lottery?allowPublicKeyRetrieval=true&sslMode=DISABLED&useSSL=false&useTimezone=true&serverTimezone=UTC
+    url: jdbc:mysql://127.0.0.1:3306/lottery?allowPublicKeyRetrieval=true
+&sslMode=DISABLED&useSSL=false&useTimezone=true&serverTimezone=UTC
     username: root
     password: admin
 ```
@@ -38,7 +39,8 @@ Para facilitar no desenvolvimento do projeto, foi utilizado o **Lombok** que bas
 
 ```
 - @Entity: Nossa classe Person é uma entidade que será mapeada no nosso banco de dados.
-- @Id/@GeneratedValue: O atributo anotado será a primary key da tabela e será gerado automaticamente usando a estratégia IDENTITY.
+- @Id/@GeneratedValue: O atributo anotado será a primary key da tabela e será gerado automaticamente usando 
+a estratégia IDENTITY.
 - @NoArgsContructor: Adiciona um construtor vazio.
 - @AllArgsContructor: Cria um construtor com todos os atributos.
 - @Getter: Cria os getters.
@@ -108,7 +110,8 @@ A interface **PersonRepository** deverá estender da interface **JpaRepository**
 
 
 ```
-@Repository: tem como objeto criar beans para a persistência dos dados, além de capturar excepções específicas de persistência.
+@Repository: tem como objeto criar beans para a persistência dos dados, além de capturar excepções 
+específicas de persistência.
 ```
 
 ```java
@@ -124,8 +127,8 @@ A classe **PersonRequestDTO** foi pensada com base no requisito de que devemos p
 - Para a estruturação dessa classe foi utilizado anotações do Lombok, Swagger e também do hibernate validator.
 
 ```
-@ApiModelProperty() - Utilizada para controlar definições do nosso modelo para auxiliar na interface UI do Swagger.
-@NotEmpty() - Verifica se o campo não é nulo e nem vazio.
+@ApiModelProperty - Utilizada para controlar definições do nosso modelo para auxiliar na interface UI do Swagger.
+@NotEmpty - Verifica se o campo não é nulo e nem vazio.
 @Email - Verifica se o campo possui as características de um endereço de e-mail.
 @Data - Irá gerar automaticamente ToString, EqualsAndHashCode, Getter, Setter, RequiredArgsConstructor.
 ```
@@ -318,6 +321,7 @@ public interface TicketService {
 
 ```
 @Service: Usamos esta anotação para que o framework enxergue nossa classe e indicamos que esta classe é um serviço.
+@Slf4j: Abstração de muitos frameworks de log, permitindo independência da implementação concreta de log a ser utilizada.
 ```
 
 O método criado irá instanciar um novo ticket, o próximo passo será iterar pelo ticket passado por parâmetro que vai receber os tickets armazenados no banco de dados (que será utilizado em outro método) e para garantir que não ocorra duplicidade, iremos verificar se o ticket armazenado é igual ao gerado, caso for, será configurado um novo sorteio, porém, caso esse ticket configurado ainda seja igual à algum ticket previamente cadastrador no banco, será retornado um log de erro informando que o ticket já foi gerado anteriormente.
@@ -353,14 +357,17 @@ public class TicketServiceImpl implements TicketService {
 
 ```
 @RestController: Indica que este controller por padrão responderá o formato JSON e se trata de um controller REST.
-@RequestMapping: Responsável por mapear as urls dos nossos métodos, ou seja, todos os métodos desse controller terão como base o "/api/v1/person".
+@RequestMapping: Responsável por mapear as urls dos nossos métodos, ou seja, todos os métodos desse 
+controller terão como base o "/api/v1/person".
 @Api: Utilizada para declarar uma API de recurso do Swagger, somente com essa anotação serão verificadas pelo Swagger.
 @PostMapping: Tratam de requisições POST das solicitações HTTP. 
 @GetMapping: Tratam de requisições GET das solicitações HTTP.
 @RequestBody: Indicamos o objeto PersonRequestDTO que deve ser buscado no corpo da requisição.
-@Valid: Indica que o objeto será validado tendo como base as anotações de validação que foram atribuídas anteriormente.
+@Valid: Indica que o objeto será validado tendo como base as anotações de validação que 
+foram atribuídas anteriormente.
 @ResponseStatus: Utilizado para especificar o status de resposta HTTP.
-@ApiOperation: É utilizado para declarar a operação para o recurso de API e utilizando o *value* podemos fazer uma breve descrição.
+@ApiOperation: É utilizado para declarar a operação para o recurso de API e utilizando o *value* podemos fazer 
+uma breve descrição.
 @PathVariable: Indica que o valor da variável será passado diretamente na URL, não como uma query, após "=?".
 ```
 
@@ -659,7 +666,7 @@ public class PersonServiceTest {
     }
 
     @Test
-    void shouldCreatePersonAndTicketWhenEmailDoesExists() {
+    void shouldCreatePersonAndTicketWhenEmailDoesNotExists() {
 
         final var person = PersonUtils.generatePerson();
         final var personRequestDTO = PersonUtils.generatePersonRequestDTO();
@@ -676,6 +683,10 @@ public class PersonServiceTest {
     }
 }
 ```
+
+### Implementação no sistema na Web
+
+Pensando na segurança dos dados que serão persistidos e consumidos da nossa base de dados, uma abordagem é prover uma segurança para a aplicação, para isso, podemos prover via JWT, que após o usuário fizer cadastro em um *endpoint* do serviço de autenticação, será provido um token e após isso, quando fizer alguma requisição para nossa API, será enviado via header pelo *Authorization*.  Iremos utilizar o Spring Security que é um framework que vai fornecer a autenticação, autorização e proteção contra ataques maliciosos. Também algo que pode ser feito na aplicação é se utilizar o docker, pois, utilizando dessa ferramenta,  nos permite realizar o empacotamento da nossa aplicação dentro de um container, ou seja, se tornando portável para qualquer outro host, reduzindo drasticamente o tempo de *deploy* da aplicação e até mesmo da infraestrutura, devido que, uma vez “dockerizada”, não há necessidade de ajustes de ambiente para um correto funcionamento da aplicação, então, uma vez configurado, poderá ser replicado quantas vezes quiser. E uma imagem docker, pode ser movida para uma infraestrutura em nuvem, como por exemplo, utilizando o AWS ECR que é um registro de contêiner totalmente gerenciado que facilita o armazenamento, gerenciamento, compartilhamento e a implantação de imagens e artefatos de contêiner.
 
 ### Considerações finais
 
